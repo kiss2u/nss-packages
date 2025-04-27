@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qca-nss-ecm
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE_URL:=https://git.codelinaro.org/clo/qsdk/oss/lklm/qca-nss-ecm.git
 PKG_SOURCE_PROTO:=git
@@ -22,11 +22,12 @@ define KernelPackage/qca-nss-ecm
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
-  DEPENDS:=@(TARGET_qualcommax||TARGET_ipq807x||TARGET_ipq60xx) \
+  DEPENDS:=@(TARGET_qualcommbe||TARGET_qualcommax||TARGET_ipq806x) \
 		   +ethtool \
 		   +kmod-nf-conntrack \
-		   +@NSS_DRV_IPV6_ENABLE \
-		   +@NSS_DRV_VIRT_IF_ENABLE \
+		   +@(!TARGET_qualcommbe):NSS_DRV_IPV6_ENABLE \
+		   +@(!TARGET_qualcommbe):NSS_DRV_VIRT_IF_ENABLE \
+		   +@(!TARGET_qualcommbe&&PACKAGE_kmod-pppoe):NSS_DRV_PPPOE_ENABLE \
 		   +PACKAGE_kmod-qca-nss-drv:kmod-qca-nss-drv \
 		   +PACKAGE_kmod-qca-mcs:kmod-qca-mcs \
 		   +PACKAGE_kmod-bonding:kmod-bonding \
@@ -35,8 +36,7 @@ define KernelPackage/qca-nss-ecm
 		   +PACKAGE_kmod-ppp:kmod-ppp \
 		   +PACKAGE_kmod-pppoe:kmod-pppoe \
 		   +PACKAGE_kmod-pppoe:kmod-pptp \
-		   +PACKAGE_kmod-pppoe:kmod-pppol2tp \
-		   +@(PACKAGE_kmod-pppoe):NSS_DRV_PPPOE_ENABLE
+		   +PACKAGE_kmod-pppoe:kmod-pppol2tp
   TITLE:=QCA NSS Enhanced Connection Manager (ECM)
   FILES:=$(PKG_BUILD_DIR)/ecm.ko
   KCONFIG:=CONFIG_BRIDGE_NETFILTER=y \
